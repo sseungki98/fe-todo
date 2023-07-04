@@ -94,34 +94,42 @@ function update(id, status) {
   });
 }
 
-let input = [];
-
 rl.on("line", line => {
   input = line.split("$");
-  switch (input[0]) {
-    case "show":
-      if (input[1] == "all") {
-        show_all();
-      } else {
-        show_status(input[1]);
-      }
-      break;
-    case "add":
-      let tags = input[2]
-        .substring(1, input[2].length - 1)
-        .replace(/"/g, "")
-        .split(",");
-      add(input[1], tags);
-      break;
-    case "delete":
-      delete_todo(parseInt(input[1]));
-      break;
-    case "update":
-      update(parseInt(input[1]), input[2]);
-      break;
-    default:
-      console.log("다른 명령어를 입력해주세요.");
+  if (input[0] === "exit") {
+    rl.close();
+  } else {
+    switch (input[0]) {
+      case "show":
+        if (input[1] == "all") {
+          show_all();
+        } else {
+          show_status(input[1]);
+        }
+        break;
+      case "add":
+        let tags = input[2]
+          .substring(1, input[2].length - 1)
+          .replace(/"/g, "")
+          .split(",");
+        add(input[1], tags);
+        break;
+      case "delete":
+        delete_todo(parseInt(input[1]));
+        break;
+      case "update":
+        update(parseInt(input[1]), input[2]);
+        break;
+      default:
+        console.log("올바른 명령어를 입력해주세요.");
+        console.log("-------------------------------------------------");
+        console.log("show$all => 모든 상태별 개수 확인");
+        console.log("show$[todo or doing or done] => 상태별 목록 확인");
+        console.log("add$[name]$[[tags]] => todo 리스트에 추가");
+        console.log("delete$[id] => todo에 존재하는 id 삭제");
+        console.log("update$[id]$[status] => id에 해당하는 일의 상태 업데이트");
+        console.log("exit => 끝내기");
+        console.log("-------------------------------------------------");
+    }
   }
-
-  rl.close();
 });
