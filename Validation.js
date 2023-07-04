@@ -12,7 +12,7 @@ class Validation {
     return false;
   }
 
-  static checkStatus(status) {
+  static checkTodoStatus(status) {
     if (status === "todo") {
       return true;
     }
@@ -21,15 +21,15 @@ class Validation {
   }
 
   static checkNameExist(name) {
-    let flag = true;
+    let isNameExistFlag = true;
     todos.some(value => {
       if (value.name === name) {
         console.log(EXIST_NAME_ERROR);
-        flag = false;
+        isNameExistFlag = false;
         return true;
       }
     });
-    if (flag) {
+    if (isNameExistFlag) {
       return true;
     }
 
