@@ -7,12 +7,6 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-function show_all() {
-  // show$all
-  count = count_status();
-  console.log(`현재상태 : todo: ${count["todo"]}개, doing: ${count["doing"]}개, done: ${count["done"]}개`);
-}
-
 function count_status() {
   // 개수 카운트 함수
   count = { todo: 0, doing: 0, done: 0 };
@@ -35,6 +29,12 @@ function count_status() {
   return count;
 }
 
+function show_all() {
+  // show$all
+  count = count_status();
+  console.log(`현재상태 : todo: ${count["todo"]}개, doing: ${count["doing"]}개, done: ${count["done"]}개`);
+}
+
 function show_status(status) {
   //show$['status']
   const count = count_status();
@@ -47,8 +47,11 @@ function show_status(status) {
   console.log(`${status} 리스트 :  총${count[status]}건 : ` + `${name_id_list}`);
 }
 
-function add(name, tags) {
+function add_todo(name, tags) {
   //add$['name']$[['tags']]
+  if (!Validation.checkNameExist(name)) {
+    return;
+  }
   const id = Math.floor(Math.random() * 10000);
   while (!Validation.checkIdExist(id)) {
     id = Math.floor(Math.random() * 10000);
@@ -66,7 +69,6 @@ function add(name, tags) {
 
 function delete_todo(id) {
   //delete$['id']
-
   todos.forEach((value, index) => {
     if (value["id"] == id) {
       if (Validation.checkStatus(value.status)) {
@@ -74,14 +76,12 @@ function delete_todo(id) {
         todos.splice(index, index + 1);
         show_all();
         return false;
-      } else {
-        console.log(`${value.name}의 상태가 todo가 아닙니다.`);
       }
     }
   });
 }
 
-function update(id, status) {
+function update_todo(id, status) {
   //update$['id']$['status']
   todos.forEach((value, index) => {
     if (value["id"] == id && value["status"] != status) {
@@ -94,7 +94,7 @@ function update(id, status) {
   });
 }
 
-rl.on("line", line => {
+rl.question("명령어를 입력하세요 > ", line => {
   input = line.split("$");
   if (input[0] === "exit") {
     rl.close();
@@ -108,17 +108,14 @@ rl.on("line", line => {
         }
         break;
       case "add":
-        let tags = input[2]
-          .substring(1, input[2].length - 1)
-          .replace(/"/g, "")
-          .split(",");
-        add(input[1], tags);
+        tags = JSON.parse(input[2]);
+        add_todo(input[1], tags);
         break;
       case "delete":
         delete_todo(parseInt(input[1]));
         break;
       case "update":
-        update(parseInt(input[1]), input[2]);
+        update_todo(parseInt(input[1]), input[2]);
         break;
       default:
         console.log("올바른 명령어를 입력해주세요.");
