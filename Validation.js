@@ -1,5 +1,13 @@
 const { todos } = require("./todos");
-const { NO_ID_EXIST_ERROR, NOT_TODO_STATUS_ERROR, EXIST_NAME_ERROR, NOT_JSON_ERROR, NOT_IN_STATUS_ERROR } = require("./errors");
+const {
+  NO_ID_EXIST_ERROR,
+  NOT_TODO_STATUS_ERROR,
+  EXIST_NAME_ERROR,
+  NOT_JSON_ERROR,
+  NOT_IN_STATUS_ERROR,
+  NOT_INTEGER_ERROR,
+  NOT_VALID_OPERATION,
+} = require("./errors");
 
 class Validation {
   // id가 todo list에 존재하는지 판별
@@ -56,6 +64,49 @@ class Validation {
     }
     console.log(NOT_IN_STATUS_ERROR);
     return false;
+  }
+
+  static isInteger(id) {
+    if (Number.isInteger(id)) {
+      return true;
+    }
+
+    console.log(NOT_INTEGER_ERROR);
+    return false;
+  }
+
+  static checkLength(length, num) {
+    if (length === num) {
+      return true;
+    }
+
+    console.log(NOT_VALID_OPERATION);
+    return false;
+  }
+
+  static checkParameterLength(input) {
+    let equalZeroFlag = false;
+    input.forEach(value => {
+      if (value.length === 0) {
+        equalZeroFlag = true;
+      }
+    });
+
+    return !equalZeroFlag;
+  }
+
+  static checkValidOperationLength(input) {
+    const inputLength = input.length;
+    switch (input[0]) {
+      case "show":
+        return this.checkLength(inputLength, 2) && this.checkParameterLength(input);
+      case "add":
+        return this.checkLength(inputLength, 3) && this.checkParameterLength(input);
+      case "delete":
+        return this.checkLength(inputLength, 2) && this.checkParameterLength(input);
+      case "update":
+        return this.checkLength(inputLength, 3) && this.checkParameterLength(input);
+    }
   }
 }
 
