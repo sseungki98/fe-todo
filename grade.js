@@ -39,8 +39,7 @@ let recursiveAsyncReadLine = function () {
           }
           break;
         case "add":
-          tags = JSON.parse(input[2]);
-          addTodo(input[1], tags);
+          addTodo(input[1], input[2]);
           break;
         case "delete":
           deleteTodo(parseInt(input[1]));
@@ -62,7 +61,7 @@ recursiveAsyncReadLine();
 // 개수 카운트 함수
 function countStatus() {
   count = { todo: 0, doing: 0, done: 0 };
-  todos.map(item => {
+  todos.forEach(item => {
     switch (item.status) {
       case "todo":
         count["todo"]++;
@@ -92,7 +91,7 @@ function showStatus(status) {
   const count = countStatus();
   const filtered_todos_array = todos.filter(value => value.status == status);
   let name_id_list = "";
-  filtered_todos_array.map(value => {
+  filtered_todos_array.forEach(value => {
     name_id_list += `'${value.name}, ${value.id.toString()}번'`;
   });
 
@@ -112,6 +111,9 @@ function addTodo(name, tags) {
   let id = getRandomID();
   while (!Validation.checkIdExist(id)) {
     id = getRandomID();
+  }
+  if (!Validation.isJSON(tags)) {
+    return;
   }
   todos.push({
     name: name,
