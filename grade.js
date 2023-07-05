@@ -147,7 +147,7 @@ function updateItem(value, status) {
 
 //update$['id']$['status']
 function updateTodo(id, status) {
-  if (!Validation.isValidStatus || !Validation.isInteger(id)) {
+  if (!Validation.isValidStatus(status) || !Validation.isInteger(id)) {
     return;
   }
 
