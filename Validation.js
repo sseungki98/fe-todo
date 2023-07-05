@@ -1,5 +1,5 @@
 const { todos } = require("./todos");
-const { NO_ID_EXIST_ERROR, NOT_TODO_STATUS_ERROR, EXIST_NAME_ERROR, NOT_JSON_ERROR } = require("./errors");
+const { NO_ID_EXIST_ERROR, NOT_TODO_STATUS_ERROR, EXIST_NAME_ERROR, NOT_JSON_ERROR, NOT_IN_STATUS_ERROR } = require("./errors");
 
 class Validation {
   // id가 todo list에 존재하는지 판별
@@ -39,6 +39,7 @@ class Validation {
     return false;
   }
 
+  // 입력된 Tags가 JSON 타입인지 확인
   static isJSON(tags) {
     try {
       JSON.parse(tags);
@@ -47,6 +48,14 @@ class Validation {
       return false;
     }
     return true;
+  }
+
+  static isValidStatus(status) {
+    if (status === "todo" || status === "doing" || status === "done") {
+      return true;
+    }
+    console.log(NOT_IN_STATUS_ERROR);
+    return false;
   }
 }
 
