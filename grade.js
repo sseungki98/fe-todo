@@ -28,29 +28,34 @@ let recursiveAsyncReadLine = function () {
     if (input[0] === "exit") {
       return rl.close();
     } else {
-      switch (
-        input[0] // 케이스 구분
-      ) {
-        case "show":
-          if (input[1] === "all") {
-            showAll();
-          } else {
-            showStatus(input[1]);
-          }
-          break;
-        case "add":
-          addTodo(input[1], input[2]);
-          break;
-        case "delete":
-          deleteTodo(parseInt(input[1]));
-          break;
-        case "update":
-          updateTodo(parseInt(input[1]), input[2]);
-          break;
-        default:
-          showHelpMessage();
-          break;
+      if (!Validation.checkValidOperationLength(input)) {
+        showHelpMessage();
+      } else {
+        switch (
+          input[0] // 케이스 구분
+        ) {
+          case "show":
+            if (input[1] === "all") {
+              showAll();
+            } else {
+              showStatus(input[1]);
+            }
+            break;
+          case "add":
+            addTodo(input[1], input[2]);
+            break;
+          case "delete":
+            deleteTodo(parseInt(input[1]));
+            break;
+          case "update":
+            updateTodo(parseInt(input[1]), input[2]);
+            break;
+          default:
+            showHelpMessage();
+            break;
+        }
       }
+
       recursiveAsyncReadLine();
     }
   });
@@ -123,6 +128,9 @@ function deleteItem(value, index) {
 
 //delete$['id']
 function deleteTodo(id) {
+  if (!Validation.isInteger(id)) {
+    return;
+  }
   todos.forEach((value, index) => {
     if (value["id"] === id && Validation.checkTodoStatus(value.status)) {
       deleteItem(value, index);
@@ -139,6 +147,10 @@ function updateItem(value, status) {
 
 //update$['id']$['status']
 function updateTodo(id, status) {
+  if (!Validation.isValidStatus || !Validation.isInteger(id)) {
+    return;
+  }
+
   todos.forEach(value => {
     if (value["id"] === id && value["status"] != status) {
       updateItem(value, status);
