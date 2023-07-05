@@ -2,6 +2,7 @@ const { todos } = require("./todos");
 const { NO_ID_EXIST_ERROR, NOT_TODO_STATUS_ERROR, EXIST_NAME_ERROR } = require("./errors");
 
 class Validation {
+  // id가 todo list에 존재하는지 판별
   static checkIdExist(id) {
     const id_list = todos.filter(value => value.id === id);
     if (id_list.length === 0) {
@@ -12,6 +13,7 @@ class Validation {
     return false;
   }
 
+  // status가 todo인지 판별
   static checkTodoStatus(status) {
     if (status === "todo") {
       return true;
@@ -20,6 +22,7 @@ class Validation {
     return false;
   }
 
+  // name이 todo list에 존재하는지 판별
   static checkNameExist(name) {
     let isNameExistFlag = true;
     todos.some(value => {

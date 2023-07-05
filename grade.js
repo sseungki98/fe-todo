@@ -8,13 +8,29 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-var recursiveAsyncReadLine = function () {
-  rl.question(": ", function (answer) {
+// 유효하지 않은 명령어 입력 시 출력
+function showHelpMessage() {
+  console.log("올바른 명령어를 입력해주세요.");
+  console.log("-------------------------------------------------");
+  console.log("show$all => 모든 상태별 개수 확인");
+  console.log("show$[todo or doing or done] => 상태별 목록 확인");
+  console.log("add$[name]$[[tags]] => todo 리스트에 추가");
+  console.log("delete$[id] => todo에 존재하는 id 삭제");
+  console.log("update$[id]$[status] => id에 해당하는 일의 상태 업데이트");
+  console.log("exit => 끝내기");
+  console.log("-------------------------------------------------");
+}
+
+let recursiveAsyncReadLine = function () {
+  rl.question("명령어를 입력해주세요 > ", function (answer) {
+    // Input 입력받기
     input = answer.split("$");
     if (input[0] == "exit") {
       return rl.close();
     } else {
-      switch (input[0]) {
+      switch (
+        input[0] // 케이스 구분
+      ) {
         case "show":
           if (input[1] == "all") {
             showAll();
@@ -33,15 +49,7 @@ var recursiveAsyncReadLine = function () {
           updateTodo(parseInt(input[1]), input[2]);
           break;
         default:
-          console.log("올바른 명령어를 입력해주세요.");
-          console.log("-------------------------------------------------");
-          console.log("show$all => 모든 상태별 개수 확인");
-          console.log("show$[todo or doing or done] => 상태별 목록 확인");
-          console.log("add$[name]$[[tags]] => todo 리스트에 추가");
-          console.log("delete$[id] => todo에 존재하는 id 삭제");
-          console.log("update$[id]$[status] => id에 해당하는 일의 상태 업데이트");
-          console.log("exit => 끝내기");
-          console.log("-------------------------------------------------");
+          showHelpMessage();
           break;
       }
       recursiveAsyncReadLine();
@@ -51,8 +59,8 @@ var recursiveAsyncReadLine = function () {
 
 recursiveAsyncReadLine();
 
+// 개수 카운트 함수
 function countStatus() {
-  // 개수 카운트 함수
   count = { todo: 0, doing: 0, done: 0 };
   todos.map(item => {
     switch (item.status) {
@@ -73,14 +81,14 @@ function countStatus() {
   return count;
 }
 
+// show$all(전체 상태별 개수 출력)
 function showAll() {
-  // show$all
   count = countStatus();
   console.log(`현재상태 : todo: ${count["todo"]}개, doing: ${count["doing"]}개, done: ${count["done"]}개`);
 }
 
+//show$['status'](상태별 리스트 내역 출력)
 function showStatus(status) {
-  //show$['status']
   const count = countStatus();
   const filtered_todos_array = todos.filter(value => value.status == status);
   let name_id_list = "";
@@ -91,16 +99,17 @@ function showStatus(status) {
   console.log(`${status} 리스트 :  총${count[status]}건 : ` + `${name_id_list}`);
 }
 
+// 1에서 10000까지 랜덤 값 반환
 function getRandomID() {
-  return Math.floor(Math.random() * 10000);
+  return Math.floor(Math.random() * 10000) + 1;
 }
 
+//add$['name']$[['tags']](todo 리스트에 값 추가)
 function addTodo(name, tags) {
-  //add$['name']$[['tags']]
   if (!Validation.checkNameExist(name)) {
     return;
   }
-  const id = getRandomID();
+  let id = getRandomID();
   while (!Validation.checkIdExist(id)) {
     id = getRandomID();
   }
@@ -114,14 +123,15 @@ function addTodo(name, tags) {
   showAll();
 }
 
+//todo item 삭제
 function deleteItem(value, index) {
   console.log(`${value.name}가 목록에서 삭제되었습니다.`);
   todos.splice(index, index + 1);
   showAll();
 }
 
+//delete$['id']
 function deleteTodo(id) {
-  //delete$['id']
   todos.forEach((value, index) => {
     if (value["id"] === id && Validation.checkTodoStatus(value.status)) {
       deleteItem(value, index);
@@ -129,14 +139,15 @@ function deleteTodo(id) {
   });
 }
 
+// todo item의 status값 변경
 function updateItem(value, status) {
   console.log(`${value.name}가 ${status}로 변경됐습니다.`);
   value.status = status;
   showAll();
 }
 
+//update$['id']$['status']
 function updateTodo(id, status) {
-  //update$['id']$['status']
   todos.forEach(value => {
     if (value["id"] == id && value["status"] != status) {
       updateItem(value, status);
