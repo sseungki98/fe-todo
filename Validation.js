@@ -58,6 +58,7 @@ class Validation {
     return true;
   }
 
+  // status가 todo, doing, done 중 하나인지 판단
   static isValidStatus(status) {
     if (status === "todo" || status === "doing" || status === "done") {
       return true;
@@ -66,6 +67,7 @@ class Validation {
     return false;
   }
 
+  // id값이 정수인지 판단
   static isInteger(id) {
     if (Number.isInteger(id)) {
       return true;
@@ -75,7 +77,8 @@ class Validation {
     return false;
   }
 
-  static checkLength(length, num) {
+  // 명령어 별 파라미터 개수 판단
+  static checkInputLength(length, num) {
     if (length === num) {
       return true;
     }
@@ -84,6 +87,7 @@ class Validation {
     return false;
   }
 
+  // 빈 파라미터 값에 대한 판단
   static checkParameterLength(input) {
     let equalZeroFlag = false;
     input.forEach(value => {
@@ -95,17 +99,18 @@ class Validation {
     return !equalZeroFlag;
   }
 
+  // 유효한 명령어인지 판단(input 길이 and 파라미터 값 > 0)
   static checkValidOperationLength(input) {
     const inputLength = input.length;
     switch (input[0]) {
       case "show":
-        return this.checkLength(inputLength, 2) && this.checkParameterLength(input);
+        return this.checkInputLength(inputLength, 2) && this.checkParameterLength(input);
       case "add":
-        return this.checkLength(inputLength, 3) && this.checkParameterLength(input);
+        return this.checkInputLength(inputLength, 3) && this.checkParameterLength(input);
       case "delete":
-        return this.checkLength(inputLength, 2) && this.checkParameterLength(input);
+        return this.checkInputLength(inputLength, 2) && this.checkParameterLength(input);
       case "update":
-        return this.checkLength(inputLength, 3) && this.checkParameterLength(input);
+        return this.checkInputLength(inputLength, 3) && this.checkParameterLength(input);
     }
   }
 }
