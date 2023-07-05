@@ -25,14 +25,14 @@ let recursiveAsyncReadLine = function () {
   rl.question("명령어를 입력해주세요 > ", function (answer) {
     // Input 입력받기
     input = answer.split("$");
-    if (input[0] == "exit") {
+    if (input[0] === "exit") {
       return rl.close();
     } else {
       switch (
         input[0] // 케이스 구분
       ) {
         case "show":
-          if (input[1] == "all") {
+          if (input[1] === "all") {
             showAll();
           } else {
             showStatus(input[1]);
@@ -61,21 +61,7 @@ recursiveAsyncReadLine();
 // 개수 카운트 함수
 function countStatus() {
   count = { todo: 0, doing: 0, done: 0 };
-  todos.forEach(item => {
-    switch (item.status) {
-      case "todo":
-        count["todo"]++;
-        break;
-      case "doing":
-        count["doing"]++;
-        break;
-      case "done":
-        count["done"]++;
-        break;
-      default:
-        console.log(NOT_IN_STATUS_ERROR);
-    }
-  });
+  todos.forEach(item => count[item.status]++);
 
   return count;
 }
@@ -89,7 +75,10 @@ function showAll() {
 //show$['status'](상태별 리스트 내역 출력)
 function showStatus(status) {
   const count = countStatus();
-  const filtered_todos_array = todos.filter(value => value.status == status);
+  if (!Validation.isValidStatus) {
+    return;
+  }
+  const filtered_todos_array = todos.filter(value => value.status === status);
   let name_id_list = "";
   filtered_todos_array.forEach(value => {
     name_id_list += `'${value.name}, ${value.id.toString()}번'`;
@@ -151,7 +140,7 @@ function updateItem(value, status) {
 //update$['id']$['status']
 function updateTodo(id, status) {
   todos.forEach(value => {
-    if (value["id"] == id && value["status"] != status) {
+    if (value["id"] === id && value["status"] != status) {
       updateItem(value, status);
     }
   });
